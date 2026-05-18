@@ -140,6 +140,7 @@ return {
         WinBar = { link = "WinBar" },
         WinBarNC = { link = "WinBarNC" },
       },
+      shell = "nu",
       size = 10,
       open_mapping = [[<F7>]],
       shading_factor = 2,

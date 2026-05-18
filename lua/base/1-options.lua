@@ -4,8 +4,9 @@
 -- ----------------------------------------
 
 -- Theme
-vim.g.default_colorscheme = "eldritch"
+vim.g.default_colorscheme = "tokyodark"
 
+vim.opt.shell = "/usr/bin/bash"
 -- Options --------------------------------------------------------------------
 vim.opt.breakindent = true -- Wrap indent to match  line start.
 vim.opt.clipboard = "unnamedplus" -- Connection to the system clipboard.
@@ -48,11 +49,11 @@ vim.opt.shada = "!,'1000,<50,s10,h" -- Remember the last 1000 opened files
 vim.opt.history = 1000 -- Number of commands to remember in a history table (per buffer).
 vim.opt.swapfile = false -- Ask what state to recover when opening a file that was not saved.
 vim.opt.wrap = true -- Disable wrapping of lines longer than the width of window.
-vim.opt.colorcolumn = "80" -- PEP8 like character limit vertical bar.
-vim.opt.mousescroll = "ver:1,hor:0" -- Disables hozirontal scroll in neovim.
+vim.opt.colorcolumn = "" -- PEP8 like character limit vertical bar.
+vim.opt.mousescroll = "ver:6,hor:6" -- Disables hozirontal scroll in neovim.
 vim.opt.guicursor = "n:blinkon200,i-ci-ve:ver25" -- Enable cursor blink.
-vim.opt.autochdir = true -- Use current file dir as working dir (See project.nvim).
-vim.opt.scrolloff = 1000 -- Number of lines to leave before/after the cursor when scrolling. Setting a high value keep the cursor centered.
+vim.opt.autochdir = false -- Use current file dir as working dir (See project.nvim).
+vim.opt.scrolloff = 8 -- Number of lines to leave before/after the cursor when scrolling. Setting a high value keep the cursor centered.
 vim.opt.sidescrolloff = 8 -- Same but for side scrolling.
 vim.opt.selection = "old" -- Don't select the newline symbol when using <End> on visual mode.
 

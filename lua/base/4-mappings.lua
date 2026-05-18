@@ -1,4 +1,4 @@
--- Keybindings (qwerty).
+-- Keybindings (colemak-dh).
 
 -- DESCRIPTION:
 -- All mappings are defined here.
@@ -20,6 +20,7 @@
 
 --       ## Plugin bindings
 --       -> alpha-nvim
+--       -> nvmenu
 --       -> git                                [git]
 --       -> file browsers
 --       -> session manager
@@ -36,8 +37,11 @@
 --       -> hop.nvim
 --       -> mason-lspconfig.nvim               [lsp]
 
+--       ## Remaps
+--       -> colemak-dh remaps
 --
---   KEYBINDINGS REFERENCE
+--
+--   MAPPINGS REFERENCE
 --   -------------------------------------------------------------------
 --   |        Mode  | Norm | Ins | Cmd | Vis | Sel | Opr | Term | Lang |
 --   Command        +------+-----+-----+-----+-----+-----+------+------+
@@ -60,7 +64,7 @@ local get_icon = utils.get_icon
 local is_available = utils.is_available
 local ui = require("base.utils.ui")
 local maps = require("base.utils").get_mappings_template()
-local is_android = vim.fn.isdirectory('/data') == 1 -- true if on android
+local is_android = vim.fn.isdirectory("/data") == 1 -- true if on android
 
 -- -------------------------------------------------------------------------
 --
@@ -72,7 +76,7 @@ local is_android = vim.fn.isdirectory('/data') == 1 -- true if on android
 local icons = {
   f = { desc = get_icon("Find", true) .. " Find" },
   p = { desc = get_icon("Packages", true) .. " Packages" },
-  l = { desc = get_icon("LSP", true) .. " LSP" },
+  l = { desc = get_icon("ActiveLSP", true) .. " LSP" },
   u = { desc = get_icon("UI", true) .. " UI" },
   b = { desc = get_icon("Buffer", true) .. " Buffers" },
   bs = { desc = get_icon("Sort", true) .. " Sort Buffers" },
@@ -96,22 +100,25 @@ maps.n["<leader>W"] =
 maps.n["<leader>n"] = { "<cmd>enew<cr>", desc = "New file" }
 maps.n["<Leader>/"] = { "gcc", remap = true, desc = "Toggle comment line" }
 maps.x["<Leader>/"] = { "gc", remap = true, desc = "Toggle comment" }
-maps.n["gx"] =
-{ utils.open_with_program, desc = "Open the file under cursor with a program" }
+maps.n["gx"] = {
+  utils.open_with_program,
+  desc = "Open the file under cursor with a program",
+}
 maps.n["<C-s>"] = { "<cmd>w!<cr>", desc = "Force write" }
 maps.n["|"] = { "<cmd>vsplit<cr>", desc = "Vertical Split" }
 maps.n["\\"] = { "<cmd>split<cr>", desc = "Horizontal Split" }
 maps.i["<C-BS>"] = { "<C-W>", desc = "Enable CTRL+backsace to delete." }
 maps.n["0"] =
 { "^", desc = "Go to the fist character of the line (aliases 0 to ^)" }
-maps.n["<leader>q"] = { "<cmd>confirm q<cr>", desc = "Quit" }
+maps.n["<C-q>"] = { "<cmd>q!<cr>", desc = "Force quit" }
 maps.n["<leader>q"] = {
   function()
     -- Ask user for confirmation
-    local choice = vim.fn.confirm("Do you really want to exit nvim?", "&Yes\n&No", 2)
+    local choice =
+        vim.fn.confirm("Do you really want to exit nvim?", "&Yes\n&No", 2)
     if choice == 1 then
       -- If user confirms, but there are still files to be saved: Ask
-      vim.cmd('confirm quit')
+      vim.cmd("confirm quit")
     end
   end,
   desc = "Quit",
@@ -132,9 +139,11 @@ if not is_android then
   -- only useful when the option clipboard is commented on ./1-options.lua
   maps.n["<C-y>"] = { '"+y<esc>', desc = "Copy to cliboard" }
   maps.x["<C-y>"] = { '"+y<esc>', desc = "Copy to cliboard" }
-  maps.n["<C-d>"] = { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
-  maps.x["<C-d>"] = { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
-  maps.n["<C-p>"] = { '"+p<esc>', desc = "Paste from clipboard" }
+  maps.n["<C-d>"] =
+  { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
+  maps.x["<C-d>"] =
+  { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
+  maps.n["<C-p>"] = { '"+p<esc>', desc = "Paste from cliboard" }
 end
 
 -- Make 'c' key not copy to clipboard when changing a character.
@@ -147,9 +156,9 @@ maps.x["C"] = { '"_C', desc = "Change without yanking" }
 maps.n["x"] = {
   -- Also let's allow 'x' key to delete blank lines in normal mode.
   function()
-    if vim.fn.col "." == 1 then
-      local line = vim.fn.getline "."
-      if line:match "^%s*$" then
+    if vim.fn.col(".") == 1 then
+      local line = vim.fn.getline(".")
+      if line:match("^%s*$") then
         vim.api.nvim_feedkeys('"_dd', "n", false)
         vim.api.nvim_feedkeys("$", "n", false)
       else
@@ -167,9 +176,9 @@ maps.x["x"] = { '"_x', desc = "Delete all characters in line" }
 maps.n["X"] = {
   -- Also let's allow 'x' key to delete blank lines in normal mode.
   function()
-    if vim.fn.col "." == 1 then
-      local line = vim.fn.getline "."
-      if line:match "^%s*$" then
+    if vim.fn.col(".") == 1 then
+      local line = vim.fn.getline(".")
+      if line:match("^%s*$") then
         vim.api.nvim_feedkeys('"_dd', "n", false)
         vim.api.nvim_feedkeys("$", "n", false)
       else
@@ -187,7 +196,7 @@ maps.x["X"] = { '"_X', desc = "Delete all characters in line" }
 maps.x["p"] = { "P", desc = "Paste content you've previourly yanked" }
 maps.x["P"] = { "p", desc = "Yank what you are going to override, then paste" }
 
--- search highlighting ------------------------------------------------------
+-- search highlighing ------------------------------------------------------
 -- use ESC to clear hlsearch, while preserving its original functionality.
 --
 -- TIP: If you prefer,  use <leader>ENTER instead of <ESC>
@@ -210,7 +219,7 @@ maps.n["<ESC>"] = {
 maps.x["<S-Tab>"] = { "<gv", desc = "unindent line" }
 maps.x["<Tab>"] = { ">gv", desc = "indent line" }
 maps.x["<"] = { "<gv", desc = "unindent line" }
-maps.x[">"] = { ">gv", desc = "indent line" }
+maps.x[">"] = { ">gv", desc = "indent line" } -- BUGGED: When more than 2 lines selected, loses selection
 
 -- improved gg --------------------------------------------------------------
 maps.n["gg"] = {
@@ -253,7 +262,7 @@ maps.x["G"] = {
   end,
   desc = "G and go to the last position (visual)",
 }
-maps.n["<C-a>"] = { -- to move to the previous position press ctrl + oo
+maps.n["<C-a>"] = { -- to move to the previous position press ctrl + ii
   function()
     vim.g.minianimate_disable = true
     vim.cmd("normal! gg0vG$")
@@ -284,15 +293,17 @@ end
 
 -- nvim updater
 maps.n["<leader>pD"] = { "<cmd>DistroUpdate<cr>", desc = "Distro update" }
-maps.n["<leader>pv"] = { "<cmd>DistroReadVersion<cr>", desc = "Distro version" }
-maps.n["<leader>pc"] = { "<cmd>DistroReadChangelog<cr>", desc = "Distro changelog" }
+maps.n["<leader>pv"] =
+{ "<cmd>DistroReadVersion<cr>", desc = "Distro version" }
+maps.n["<leader>pc"] =
+{ "<cmd>DistroReadChangelog<cr>", desc = "Distro changelog" }
 
 -- buffers/tabs [buffers ]--------------------------------------------------
-maps.n["<leader>c"] = { -- Close window and buffer at the same time.
+maps.n["<leader>c"] = { -- Closes window and buffer at the same time.
   function() require("heirline-components.buffer").wipe() end,
   desc = "Wipe buffer",
 }
-maps.n["<leader>C"] = { -- Close buffer keeping the window.
+maps.n["<leader>C"] = { -- Closes buffer while keeping the window
   function() require("heirline-components.buffer").close() end,
   desc = "Close buffer",
 }
@@ -302,36 +313,44 @@ maps.n["<leader>bw"] = {     -- Closes the window
   end,
   desc = "Close window",
 }
--- Close buffer keeping the window → Without confirmation.
+-- Closes buffer while keeping the window. Without confirmation.
 -- maps.n["<leader>X"] = {
 --   function() require("heirline-components.buffer").close(0, true) end,
 --   desc = "Force close buffer",
---
+-- }
 maps.n["<leader>ba"] = {
   function() vim.cmd("wa") end,
   desc = "Write all changed buffers",
 }
 maps.n["]b"] = {
   function()
-    require("heirline-components.buffer").nav(vim.v.count > 0 and vim.v.count or 1)
+    require("heirline-components.buffer").nav(
+      vim.v.count > 0 and vim.v.count or 1
+    )
   end,
   desc = "Next buffer",
 }
 maps.n["[b"] = {
   function()
-    require("heirline-components.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1))
+    require("heirline-components.buffer").nav(
+      -(vim.v.count > 0 and vim.v.count or 1)
+    )
   end,
   desc = "Previous buffer",
 }
 maps.n[">b"] = {
   function()
-    require("heirline-components.buffer").move(vim.v.count > 0 and vim.v.count or 1)
+    require("heirline-components.buffer").move(
+      vim.v.count > 0 and vim.v.count or 1
+    )
   end,
   desc = "Move buffer tab right",
 }
 maps.n["<b"] = {
   function()
-    require("heirline-components.buffer").move(-(vim.v.count > 0 and vim.v.count or 1))
+    require("heirline-components.buffer").move(
+      -(vim.v.count > 0 and vim.v.count or 1)
+    )
   end,
   desc = "Move buffer tab left",
 }
@@ -371,23 +390,23 @@ maps.n["<leader>br"] = {
 }
 maps.n["<leader>bs"] = icons.bs
 maps.n["<leader>bse"] = {
-  function() require("heirline-components.buffer").sort "extension" end,
+  function() require("heirline-components.buffer").sort("extension") end,
   desc = "Sort by extension (buffers)",
 }
 maps.n["<leader>bsr"] = {
-  function() require("heirline-components.buffer").sort "unique_path" end,
+  function() require("heirline-components.buffer").sort("unique_path") end,
   desc = "Sort by relative path (buffers)",
 }
 maps.n["<leader>bsp"] = {
-  function() require("heirline-components.buffer").sort "full_path" end,
+  function() require("heirline-components.buffer").sort("full_path") end,
   desc = "Sort by full path (buffers)",
 }
 maps.n["<leader>bsi"] = {
-  function() require("heirline-components.buffer").sort "bufnr" end,
+  function() require("heirline-components.buffer").sort("bufnr") end,
   desc = "Sort by buffer number (buffers)",
 }
 maps.n["<leader>bsm"] = {
-  function() require("heirline-components.buffer").sort "modified" end,
+  function() require("heirline-components.buffer").sort("modified") end,
   desc = "Sort by modification (buffers)",
 }
 maps.n["<leader>b\\"] = {
@@ -410,15 +429,19 @@ maps.n["<leader>b|"] = {
 }
 
 -- quick buffer switching
-maps.n["<C-k>"] = {
+maps.n["<C-e>"] = {
   function()
-    require("heirline-components.buffer").nav(vim.v.count > 0 and vim.v.count or 1)
+    require("heirline-components.buffer").nav(
+      vim.v.count > 0 and vim.v.count or 1
+    )
   end,
   desc = "Next buffer",
 }
-maps.n["<C-j>"] = {
+maps.n["<C-n>"] = {
   function()
-    require("heirline-components.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1))
+    require("heirline-components.buffer").nav(
+      -(vim.v.count > 0 and vim.v.count or 1)
+    )
   end,
   desc = "Previous buffer",
 }
@@ -479,8 +502,8 @@ maps.n["<S-Up>"] = {
 }
 maps.n["<S-PageDown>"] = {
   function()
-    local current_line = vim.fn.line "."
-    local total_lines = vim.fn.line "$"
+    local current_line = vim.fn.line(".")
+    local total_lines = vim.fn.line("$")
     local target_line = current_line + 1 + math.floor(total_lines * 0.20)
     if target_line > total_lines then target_line = total_lines end
     vim.api.nvim_win_set_cursor(0, { target_line, 0 })
@@ -490,8 +513,8 @@ maps.n["<S-PageDown>"] = {
 }
 maps.n["<S-PageUp>"] = {
   function()
-    local current_line = vim.fn.line "."
-    local target_line = current_line - 1 - math.floor(vim.fn.line "$" * 0.20)
+    local current_line = vim.fn.line(".")
+    local target_line = current_line - 1 - math.floor(vim.fn.line("$") * 0.20)
     if target_line < 1 then target_line = 1 end
     vim.api.nvim_win_set_cursor(0, { target_line, 0 })
     vim.cmd("normal! zz")
@@ -525,7 +548,7 @@ maps.c["<Right>"] = {
   desc = "Wildmenu fix for neovim bug #9953",
 }
 
--- special cases ------------------------------------------------------------
+-- special cases -------------------------------------------------
 vim.api.nvim_create_autocmd("BufWinEnter", {
   desc = "Make q close help, man, quickfix, dap floats",
   callback = function(args)
@@ -533,7 +556,9 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
         vim.api.nvim_get_option_value("buftype", { buf = args.buf })
     if vim.tbl_contains({ "help", "nofile", "quickfix" }, buftype) then
       vim.keymap.set(
-        "n", "q", "<cmd>close<cr>",
+        "n",
+        "q",
+        "<cmd>close<cr>",
         { buffer = args.buf, silent = true, nowait = true }
       )
     end
@@ -543,7 +568,9 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
   desc = "Make q close command history (q: and q?)",
   callback = function(args)
     vim.keymap.set(
-      "n", "q", "<cmd>close<cr>",
+      "n",
+      "q",
+      "<cmd>close<cr>",
       { buffer = args.buf, silent = true, nowait = true }
     )
   end,
@@ -560,8 +587,9 @@ if is_available("alpha-nvim") then
   maps.n["<leader>h"] = {
     function()
       local wins = vim.api.nvim_tabpage_list_wins(0)
-      if #wins > 1
-          and vim.api.nvim_get_option_value("filetype", {})
+      if
+          #wins > 1
+          and vim.api.nvim_get_option_value("filetype", { win = wins[1] })
           == "neo-tree"
       then
         vim.fn.win_gotoid(wins[2]) -- go to non-neo-tree window to toggle alpha
@@ -589,7 +617,7 @@ if is_available("gitsigns.nvim") then
     desc = "View Git blame",
   }
   maps.n["<leader>gL"] = {
-    function() require("gitsigns").blame_line { full = true } end,
+    function() require("gitsigns").blame_line({ full = true }) end,
     desc = "View full Git blame",
   }
   maps.n["<leader>gp"] = {
@@ -629,7 +657,7 @@ if is_available("vim-fugitive") then
   }
 end
 -- git client
-if vim.fn.executable "lazygit" == 1 then -- if lazygit exists, show it
+if vim.fn.executable("lazygit") == 1 then -- if lazygit exists, show it
   maps.n["<leader>gg"] = {
     function()
       local git_dir = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
@@ -642,13 +670,15 @@ if vim.fn.executable "lazygit" == 1 then -- if lazygit exists, show it
     desc = "ToggleTerm lazygit",
   }
 end
-if vim.fn.executable "gitui" == 1 then -- if gitui exists, show it
+if vim.fn.executable("gitui") == 1 then -- if gitui exists, show it
   maps.n["<leader>gg"] = {
     function()
       local git_dir = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
       if git_dir ~= "" then
-        if vim.fn.executable "keychain" == 1 then
-          vim.cmd('TermExec cmd="eval `keychain --eval ~/.ssh/github.key` && gitui && exit"')
+        if vim.fn.executable("keychain") == 1 then
+          vim.cmd(
+            'TermExec cmd="eval `keychain --eval ~/.ssh/github.key` && gitui && exit"'
+          )
         else
           vim.cmd("TermExec cmd='gitui && exit'")
         end
@@ -698,7 +728,7 @@ end
 if is_available("resession.nvim") then
   maps.n["<leader>S"] = icons.S
   maps.n["<leader>Sl"] = {
-    function() require("resession").load "Last Session" end,
+    function() require("resession").load("Last Session") end,
     desc = "Load last session",
   }
   maps.n["<leader>Ss"] =
@@ -719,24 +749,18 @@ if is_available("resession.nvim") then
   }
 end
 
--- smart-splits.nvim
+-- smart-splits.nvim --------------------------------------------------------
 if is_available("smart-splits.nvim") then
-  maps.n["<C-h>"] = {
-    function() require("smart-splits").move_cursor_left() end,
-    desc = "Move to left split",
-  }
-  maps.n["<C-j>"] = {
-    function() require("smart-splits").move_cursor_down() end,
-    desc = "Move to below split",
-  }
-  maps.n["<C-k>"] = {
-    function() require("smart-splits").move_cursor_up() end,
-    desc = "Move to above split",
-  }
+  -- cycle window
   maps.n["<C-l>"] = {
-    function() require("smart-splits").move_cursor_right() end,
-    desc = "Move to right split",
+    function() require("smart-splits").move_cursor_left() end,
+    desc = "Cycle window (laterally)",
   }
+  maps.n["<C-u>"] = {
+    function() require("smart-splits").move_cursor_down() end,
+    desc = "Cycle window (fron upside down)",
+  }
+  -- resize window
   maps.n["<C-Up>"] = {
     function() require("smart-splits").resize_up() end,
     desc = "Resize split up",
@@ -754,10 +778,8 @@ if is_available("smart-splits.nvim") then
     desc = "Resize split right",
   }
 else
-  maps.n["<C-h>"] = { "<C-w>h", desc = "Move to left split" }
-  maps.n["<C-j>"] = { "<C-w>j", desc = "Move to below split" }
-  maps.n["<C-k>"] = { "<C-w>k", desc = "Move to above split" }
-  maps.n["<C-l>"] = { "<C-w>l", desc = "Move to right split" }
+  maps.n["<C-l>"] = { "<C-w>l", desc = "Cycle window (laterally)" }
+  maps.n["<C-u>"] = { "<C-w>j", desc = "Cycle window (fron upside down)" }
   maps.n["<C-Up>"] = { "<cmd>resize -2<CR>", desc = "Resize split up" }
   maps.n["<C-Down>"] = { "<cmd>resize +2<CR>", desc = "Resize split down" }
   maps.n["<C-Left>"] =
@@ -775,13 +797,13 @@ end
 -- letee-calltree.nvimm ------------------------------------------------------------
 if is_available("litee-calltree.nvim") then
   -- For every buffer, look for the one with filetype "calltree" and focus it.
-  local calltree_delay = 1500 -- first run? wait a bit longer.
+  local calltree_delay = 1500 -- first run? wait a big longer
   local function focus_calltree()
     -- Note: No go to the previous cursor position, press ctrl+i / ctrl+o
     vim.defer_fn(function()
       for _, win in ipairs(vim.api.nvim_list_wins()) do
         local buf = vim.api.nvim_win_get_buf(win)
-        local ft = vim.api.nvim_get_option_value('filetype', { buf = buf })
+        local ft = vim.api.nvim_get_option_value("filetype", { buf = buf })
 
         if ft == "calltree" then
           vim.api.nvim_set_current_win(win)
@@ -796,15 +818,14 @@ if is_available("litee-calltree.nvim") then
       vim.lsp.buf.incoming_calls()
       focus_calltree()
     end,
-    desc = "Call tree (incoming)"
+    desc = "Call tree (incoming)",
   }
-  maps.n["gJ"] =
-  {
+  maps.n["gJ"] = {
     function()
       vim.lsp.buf.outgoing_calls()
       focus_calltree()
     end,
-    desc = "Call tree (outgoing)"
+    desc = "Call tree (outgoing)",
   }
 end
 
@@ -816,16 +837,12 @@ if is_available("telescope.nvim") then
     desc = "Git branches",
   }
   maps.n["<leader>gc"] = {
-    function()
-      require("telescope.builtin").git_commits()
-    end,
-    desc = "Git commits (repository)"
+    function() require("telescope.builtin").git_commits() end,
+    desc = "Git commits (repository)",
   }
   maps.n["<leader>gC"] = {
-    function()
-      require("telescope.builtin").git_bcommits()
-    end,
-    desc = "Git commits (current file)"
+    function() require("telescope.builtin").git_bcommits() end,
+    desc = "Git commits (current file)",
   }
   maps.n["<leader>gt"] = {
     function() require("telescope.builtin").git_status() end,
@@ -841,19 +858,19 @@ if is_available("telescope.nvim") then
   }
   maps.n["<leader>fa"] = {
     function()
-      local cwd = vim.fn.stdpath "config" .. "/.."
-      local search_dirs = { vim.fn.stdpath "config" }
+      local cwd = vim.fn.stdpath("config") .. "/.."
+      local search_dirs = { vim.fn.stdpath("config") }
       if #search_dirs == 1 then cwd = search_dirs[1] end -- if only one directory, focus cwd
-      require("telescope.builtin").find_files {
+      require("telescope.builtin").find_files({
         prompt_title = "Config Files",
         search_dirs = search_dirs,
         cwd = cwd,
         follow = true,
-      } -- call telescope
+      }) -- call telescope
     end,
     desc = "Find nvim config files",
   }
-  maps.n["<leader>fB"] = {
+  maps.n["<leader>fb"] = {
     function() require("telescope.builtin").buffers() end,
     desc = "Find buffers",
   }
@@ -910,7 +927,7 @@ if is_available("telescope.nvim") then
       -- Open telescope
       pcall(require("telescope.builtin").colorscheme, {
         enable_preview = true,
-        ignore_builtins = true
+        ignore_builtins = true,
       })
     end,
     desc = "Find themes",
@@ -975,7 +992,7 @@ if is_available("telescope.nvim") then
       desc = "Find and replace word in project",
     }
     maps.n["<leader>fb"] = {
-      function() require("spectre").toggle { path = vim.fn.expand "%:t:p" } end,
+      function() require("spectre").toggle({ path = vim.fn.expand("%:t:p") }) end,
       desc = "Find and replace word in buffer",
     }
   end
@@ -983,8 +1000,15 @@ if is_available("telescope.nvim") then
   -- extra - luasnip
   if is_available("LuaSnip") and is_available("telescope-luasnip.nvim") then
     maps.n["<leader>fs"] = {
-      function() require("telescope").extensions.luasnip.luasnip {} end,
+      function() require("telescope").extensions.luasnip.luasnip({}) end,
       desc = "Find snippets",
+    }
+  end
+  -- workaround for: https://github.com/L3MON4D3/LuaSnip/issues/908
+  if is_available("LuaSnip") then
+    maps.n["<C-x"] = {
+      "<cmd>lua require('luasnip').jump(1)",
+      desc = "LuaSnip jump to next field",
     }
   end
 
@@ -997,7 +1021,7 @@ if is_available("telescope.nvim") then
     }
     maps.n["<leader>fq"] = {
       function() require("telescope").extensions.macroscope.default() end,
-      desc = "Find macro history",
+      desc = "Find recorded macros",
     }
   end
 
@@ -1022,7 +1046,7 @@ if is_available("telescope.nvim") then
     }
     maps.n["<leader>mt"] = {
       function() vim.cmd("CompilerToggleResults") end,
-      desc = "compiler results",
+      desc = "Compiler results",
     }
     maps.n["<F6>"] = {
       function() vim.cmd("CompilerOpen") end,
@@ -1034,7 +1058,7 @@ if is_available("telescope.nvim") then
     }
     maps.n["<S-F7>"] = {
       function() vim.cmd("CompilerToggleResults") end,
-      desc = "compiler resume",
+      desc = "Compiler resume",
     }
   end
 end
@@ -1052,7 +1076,7 @@ if is_available("toggleterm.nvim") then
     "<cmd>ToggleTerm size=80 direction=vertical<cr>",
     desc = "Toggleterm vertical split",
   }
-  maps.n["<F7>"] = { "<cmd>ToggleTerm<cr>", desc = "terminal" }
+  maps.n["<F7>"] = { "<cmd>ToggleTerm<cr>", desc = "Perminal" }
   maps.t["<F7>"] = maps.n["<F7>"]
   maps.n["<C-'>"] = maps.n["<F7>"] -- requires terminal that supports binding <C-'>
   maps.t["<C-'>"] = maps.n["<F7>"] -- requires terminal that supports binding <C-'>
@@ -1077,18 +1101,18 @@ if is_available("nvim-dap") then
   maps.x["<leader>d"] = icons.d
 
   -- F keys
-  maps.n["<F5>"] = {
-    function()
-      require("dap").continue()
-    end,
-    desc = "Debugger: Start"
-  }
+  maps.n["<F5>"] =
+  { function() require("dap").continue() end, desc = "Debugger: Start" }
   maps.n["<S-F5>"] =
   { function() require("dap").terminate() end, desc = "Debugger: Stop" }
   maps.n["<C-F5>"] = {
-    function() require("dap").restart_frame() end, desc = "Debugger: Restart" }
+    function() require("dap").restart_frame() end,
+    desc = "Debugger: Restart",
+  }
   maps.n["<F9>"] = {
-    function() require("dap").toggle_breakpoint() end, desc = "Debugger: Toggle Breakpoint" }
+    function() require("dap").toggle_breakpoint() end,
+    desc = "Debugger: Toggle Breakpoint",
+  }
   maps.n["<S-F9>"] = {
     function()
       vim.ui.input({ prompt = "Condition: " }, function(condition)
@@ -1182,11 +1206,11 @@ if is_available("neotest") then
     desc = "Stop unit",
   }
   maps.n["<leader>Tf"] = {
-    function() require("neotest").run.run(vim.fn.expand "%") end,
+    function() require("neotest").run.run(vim.fn.expand("%")) end,
     desc = "File",
   }
   maps.n["<leader>Td"] = {
-    function() require("neotest").run.run { strategy = "dap" } end,
+    function() require("neotest").run.run({ strategy = "dap" }) end,
     desc = "Unit in debugger",
   }
   maps.n["<leader>Tt"] = {
@@ -1216,9 +1240,7 @@ if is_available("nvim-coverage") then
     desc = "Coverage",
   }
   maps.n["<leader>TC"] = {
-    function()
-      ui.toggle_coverage_signs()
-    end,
+    function() ui.toggle_coverage_signs() end,
     desc = "Coverage signs (toggle)",
   }
 end
@@ -1237,10 +1259,12 @@ maps.n["<leader>Te"] = {
 if is_available("nvim-ufo") then
   maps.n["zR"] =
   { function() require("ufo").openAllFolds() end, desc = "Open all folds" }
+  maps.n["zR"] =
+  { function() require("ufo").openAllFolds() end, desc = "Open all folds" }
   maps.n["zM"] =
   { function() require("ufo").closeAllFolds() end, desc = "Close all folds" }
   maps.n["zr"] = {
-    function() require("ufo").openFoldsExceptKinds() end,
+    function() require("ufo").openFoldsExceptKinds({}) end,
     desc = "Fold less",
   }
   maps.n["zm"] =
@@ -1249,21 +1273,25 @@ if is_available("nvim-ufo") then
     function() require("ufo").peekFoldedLinesUnderCursor() end,
     desc = "Peek fold",
   }
-  maps.n["zn"] =
-  {
-    function() require("ufo").openFoldsExceptKinds({ 'comment' }) end,
-    desc = "Fold comments"
+  maps.n["zf"] =
+  { function() require("ufo").openAllFolds() end, desc = "Open all folds" }
+  maps.n["zn"] = {
+    function() require("ufo").openFoldsExceptKinds({ "comment" }) end,
+    desc = "Fold comments",
   }
-  maps.n["zN"] =
-  {
-    function() require("ufo").openFoldsExceptKinds({ 'region' }) end,
-    desc = "Fold region"
+  maps.n["zN"] = {
+    function() require("ufo").openFoldsExceptKinds({ "region" }) end,
+    desc = "Fold region",
   }
 end
 
 -- code docmentation [docs] -------------------------------------------------
 
-if is_available("markdown-preview.nvim") or is_available("markmap.nvim") or is_available("dooku.nvim") then
+if
+    is_available("markdown-preview.nvim")
+    or is_available("markmap.nvim")
+    or is_available("dooku.nvim")
+then
   maps.n["<leader>D"] = icons.dc
 
   -- Markdown preview
@@ -1362,19 +1390,24 @@ function M.lsp_mappings(client, bufnr)
   }
 
   -- Diagnostics
-  lsp_mappings.n["gl"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" }
+  lsp_mappings.n["gl"] =
+  { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" }
   if is_available("telescope.nvim") then
-    lsp_mappings.n["<leader>lD"] =
-      { function() require("telescope.builtin").diagnostics() end, desc = "Diagnostics" }
+    lsp_mappings.n["<leader>lD"] = {
+      function() require("telescope.builtin").diagnostics() end,
+      desc = "Diagnostics",
+    }
   end
 
   -- LSP info
   if is_available("mason-lspconfig.nvim") then
-    lsp_mappings.n["<leader>li"] = { "<cmd>LspInfo<cr>", desc = "LSP information" }
+    lsp_mappings.n["<leader>li"] =
+    { "<cmd>LspInfo<cr>", desc = "LSP information" }
   end
 
   if is_available("none-ls.nvim") then
-    lsp_mappings.n["<leader>lI"] = { "<cmd>NullLsInfo<cr>", desc = "None-ls information" }
+    lsp_mappings.n["<leader>lI"] =
+    { "<cmd>NullLsInfo<cr>", desc = "None-ls information" }
   end
 
   -- Code actions
@@ -1390,7 +1423,9 @@ function M.lsp_mappings(client, bufnr)
     desc = "Refresh codelens",
     callback = function(args)
       if supports_method("textDocument/codeLens") then
-        if vim.g.codelens_enabled then vim.lsp.codelens.refresh({ bufnr = args.buf }) end
+        if vim.g.codelens_enabled then
+          vim.lsp.codelens.refresh({ bufnr = args.buf })
+        end
       end
     end,
   })
@@ -1432,14 +1467,14 @@ function M.lsp_mappings(client, bufnr)
     { desc = "Format file with LSP" }
   )
 
-  -- Autoformat (autocmd)
+  -- Autoformatting (autocmd)
   utils.add_autocmds_to_buffer("lsp_auto_format", bufnr, {
     events = "BufWritePre", -- Trigger before save
     desc = "Autoformat on save",
     callback = function()
       -- guard clause: supports_method
       if
-          not supports_method("textDocument/formatting", { bufnr = bufnr })
+          not supports_method("textDocument/formatting")
       then
         utils.del_autocmds_from_buffer("lsp_auto_format", bufnr)
         return
@@ -1471,13 +1506,16 @@ function M.lsp_mappings(client, bufnr)
     desc = "Autoformat [g]",
   }
 
+
   -- Highlight references when cursor holds
   utils.add_autocmds_to_buffer("lsp_document_highlight", bufnr, {
     {
       events = { "CursorHold", "CursorHoldI" },
       desc = "highlight references when cursor holds",
       callback = function()
-        if supports_method("textDocument/documentHighlight") then
+        if
+            supports_method("textDocument/documentHighlight")
+        then
           vim.lsp.buf.document_highlight()
         end
       end,
@@ -1491,7 +1529,7 @@ function M.lsp_mappings(client, bufnr)
 
   -- Other LSP mappings
   lsp_mappings.n["<leader>lL"] = {
-    function() vim.api.nvim_command(':LspRestart') end,
+    function() vim.api.nvim_command(":LspRestart") end,
     desc = "LSP restart",
   }
 
@@ -1566,62 +1604,196 @@ function M.lsp_mappings(client, bufnr)
   }
 
   -- Toggle inlay hints
-  if vim.b.inlay_hints_enabled == nil then vim.b.inlay_hints_enabled = vim.g.inlay_hints_enabled end
-  if vim.b.inlay_hints_enabled then vim.lsp.inlay_hint.enable(true, { bufnr = bufnr }) end
+  if vim.b.inlay_hints_enabled == nil then
+    vim.b.inlay_hints_enabled = vim.g.inlay_hints_enabled
+  end
+  if vim.b.inlay_hints_enabled then
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  end
   lsp_mappings.n["<leader>uH"] = {
     function() require("base.utils.ui").toggle_buffer_inlay_hints(bufnr) end,
-    desc = "LSP inlay hints [b]",
+    desc = "LSP inlay hints (buff]",
   }
 
   -- LSP based search
-  lsp_mappings.n["<leader>lS"] = { function() vim.lsp.buf.workspace_symbol() end, desc = "Search symbol in workspace" }
-  lsp_mappings.n["gS"] = { function() vim.lsp.buf.workspace_symbol() end, desc = "Search symbol in workspace" }
+  lsp_mappings.n["<leader>lS"] = {
+    function() vim.lsp.buf.workspace_symbol() end,
+    desc = "Search symbol in workspace",
+  }
+  lsp_mappings.n["gS"] = {
+    function() vim.lsp.buf.workspace_symbol() end,
+    desc = "Search symbol in workspace",
+  }
 
   -- LSP telescope
   if is_available("telescope.nvim") then -- setup telescope mappings if available
-    if lsp_mappings.n.gd then lsp_mappings.n.gd[1] = function() require("telescope.builtin").lsp_definitions() end end
-    if lsp_mappings.n.gI then
-      lsp_mappings.n.gI[1] = function() require("telescope.builtin").lsp_implementations() end
+    if lsp_mappings.n.gd then
+      lsp_mappings.n.gd[1] = function()
+        require("telescope.builtin").lsp_definitions()
+      end
     end
-    if lsp_mappings.n.gr then lsp_mappings.n.gr[1] = function() require("telescope.builtin").lsp_references() end end
+    if lsp_mappings.n.gI then
+      lsp_mappings.n.gI[1] = function()
+        require("telescope.builtin").lsp_implementations()
+      end
+    end
+    if lsp_mappings.n.gr then
+      lsp_mappings.n.gr[1] = function()
+        require("telescope.builtin").lsp_references()
+      end
+    end
     if lsp_mappings.n["<leader>lR"] then
-      lsp_mappings.n["<leader>lR"][1] = function() require("telescope.builtin").lsp_references() end
+      lsp_mappings.n["<leader>lR"][1] = function()
+        require("telescope.builtin").lsp_references()
+      end
     end
     if lsp_mappings.n.gy then
-      lsp_mappings.n.gy[1] = function() require("telescope.builtin").lsp_type_definitions() end
+      lsp_mappings.n.gy[1] = function()
+        require("telescope.builtin").lsp_type_definitions()
+      end
     end
     if lsp_mappings.n["<leader>lS"] then
       lsp_mappings.n["<leader>lS"][1] = function()
-        vim.ui.input({ prompt = "Symbol Query: (leave empty for word under cursor)" }, function(query)
-          if query then
-            -- word under cursor if given query is empty
-            if query == "" then query = vim.fn.expand "<cword>" end
-            require("telescope.builtin").lsp_workspace_symbols {
-              query = query,
-              prompt_title = ("Find word (%s)"):format(query),
-            }
+        vim.ui.input(
+          { prompt = "Symbol Query: (leave empty for word under cursor)" },
+          function(query)
+            if query then
+              -- word under cursor if given query is empty
+              if query == "" then query = vim.fn.expand("<cword>") end
+              require("telescope.builtin").lsp_workspace_symbols({
+                query = query,
+                prompt_title = ("Find word (%s)"):format(query),
+              })
+            end
           end
-        end)
+        )
       end
     end
     if lsp_mappings.n["gS"] then
       lsp_mappings.n["gS"][1] = function()
-        vim.ui.input({ prompt = "Symbol Query: (leave empty for word under cursor)" }, function(query)
-          if query then
-            -- word under cursor if given query is empty
-            if query == "" then query = vim.fn.expand "<cword>" end
-            require("telescope.builtin").lsp_workspace_symbols {
-              query = query,
-              prompt_title = ("Find word (%s)"):format(query),
-            }
+        vim.ui.input(
+          { prompt = "Symbol Query: (leave empty for word under cursor)" },
+          function(query)
+            if query then
+              -- word under cursor if given query is empty
+              if query == "" then query = vim.fn.expand("<cword>") end
+              require("telescope.builtin").lsp_workspace_symbols({
+                query = query,
+                prompt_title = ("Find word (%s)"):format(query),
+              })
+            end
           end
-        end)
+        )
       end
     end
   end
 
   return lsp_mappings
 end
+
+-- colemak-dh remaps (normal) ----------------------------------------------
+-- These remaps exchange the position of some keys
+
+-- movement keys
+maps.n["m"] = { "h", desc = "Movement left (colemak-dh remap)" }
+maps.n["n"] = { "j", desc = "Movement down (colemak-dh remap)" }
+maps.n["e"] = { "k", desc = "Movement up (colemak-dh remap)" }
+maps.n["i"] = { "l", desc = "Movement right (colemak-dh remap)" }
+maps.n["M"] = { "H", desc = "Movement left (colemak-dh remap)" }
+maps.n["N"] = { "J", desc = "Movement down (colemak-dh remap)" }
+maps.n["E"] = { "K", desc = "Movement up (colemak-dh remap)" }
+maps.n["I"] = { "L", desc = "Movement right (colemak-dh remap)" }
+
+-- insert
+maps.n["o"] = { "i", desc = "Insert (colemak-dh remap)" }
+maps.n["O"] = { "I", desc = "Insert (colemak-dh remap)" }
+
+-- substitute
+maps.n["j"] = { "s", desc = "Substitute (colemak-dh remap)" }
+maps.n["J"] = { "S", desc = "Substitute (colemak-dh remap)" }
+
+-- marker
+maps.n["w"] = { "m", desc = "Marker (colemak-dh remap)" }
+maps.n["W"] = { "M", desc = "Marker (colemak-dh remap)" }
+
+-- next word first char
+maps.n["b"] = { "w", desc = "Next word first char (colemak-dh remap)" }
+maps.n["B"] = { "W", desc = "Next word first char (colemak-dh remap)" }
+
+-- search next
+maps.n["k"] = { "n", desc = "Search next (colemak-dh remap)" }
+maps.n["K"] = { "N", desc = "Search prev (colemak-dh remap)" }
+
+-- next word
+maps.n["t"] = { "e", desc = "Next word (colemak-dh remap)" }
+maps.n["T"] = { "E", desc = "Next word (colemak-dh remap)" }
+
+-- prev word
+maps.n["s"] = { "b", desc = "Prev word (colemak-dh remap)" }
+maps.n["S"] = { "B", desc = "Prev word (colemak-dh remap)" }
+
+-- find till
+maps.n["h"] = { "t", desc = "Find until (colemak-dh remap)" }
+maps.n["H"] = { "T", desc = "Find until (colemak-dh remap)" }
+
+-- ctrl-i / ctrl-o
+maps.n["<C-i>"] = { "<C-o>", desc = "Go to next change (colemak-dh remap)" }
+maps.n["<C-o>"] = { "<C-i>", desc = "Go to prev change (colemak-dh remap)" }
+
+-- add empty line
+maps.n["l"] = {
+  "o<ESC>0",
+  desc = "Add empty line without entering insert mode (colemak-dh remap)",
+}
+maps.n["L"] = {
+  "O<ESC>0",
+  desc = "Add empty line without entering insert mode (colemak-dh remap)",
+}
+
+-- colemak-dh remaps (visual) -----------------------------------------------
+-- These remaps exchange the position of some keys
+
+-- movement keys
+maps.x["m"] = { "h", desc = "Movement left (colemak-dh remap)" }
+maps.x["n"] = { "j", desc = "Movement down (colemak-dh remap)" }
+maps.x["e"] = { "k", desc = "Movement up (colemak-dh remap)" }
+maps.x["i"] = { "l", desc = "Movement right (colemak-dh remap)" }
+maps.x["M"] = { "H", desc = "Movement left (colemak-dh remap)" }
+maps.x["N"] = { "J", desc = "Movement down (colemak-dh remap)" }
+maps.x["E"] = { "K", desc = "Movement up (colemak-dh remap)" }
+maps.x["I"] = { "L", desc = "Movement right (colemak-dh remap)" }
+
+-- insert
+maps.x["o"] = { "i", desc = "Insert (colemak-dh remap)" }
+maps.x["O"] = { "I", desc = "Insert (colemak-dh remap)" }
+
+-- substitute
+maps.x["j"] = { "s", desc = "Substitute (colemak-dh remap)" }
+maps.x["J"] = { "S", desc = "Substitute (colemak-dh remap)" }
+
+-- marker (Don't set this one on visual mode or it will mess the w motion)
+-- maps.x["w"]     = { "m", desc = "Marker (colemak-dh remap)" }
+-- maps.x["W"]     = { "M", desc = "Marker (colemak-dh remap)" }
+
+-- next word first char
+maps.x["b"] = { "w", desc = "Next word first char (colemak-dh remap)" }
+maps.x["B"] = { "W", desc = "Next word first char (colemak-dh remap)" }
+
+-- search next
+maps.x["k"] = { "n", desc = "Search next (colemak-dh remap)" }
+maps.x["K"] = { "N", desc = "Search prev (colemak-dh remap)" }
+
+-- next word
+maps.x["t"] = { "e", desc = "Next word (colemak-dh remap)" }
+maps.x["T"] = { "E", desc = "Next word (colemak-dh remap)" }
+
+-- prev word
+maps.x["s"] = { "b", desc = "Prev word (colemak-dh remap)" }
+maps.x["S"] = { "B", desc = "Prev word (colemak-dh remap)" }
+
+-- find till
+maps.x["h"] = { "t", desc = "Find untill (colemak-dh remap)" }
+maps.x["H"] = { "T", desc = "Find untill (colemak-dh remap)" }
 
 utils.set_mappings(maps)
 return M

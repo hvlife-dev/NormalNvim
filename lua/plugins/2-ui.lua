@@ -28,12 +28,20 @@ local is_android = vim.fn.isdirectory('/data') == 1 -- true if on android
 
 return {
 
+  {
+    "tiagovla/tokyodark.nvim",
+    event = "User LoadColorSchemes",
+     opts = {}
+  },
+
   --  tokyonight [theme]
   --  https://github.com/folke/tokyonight.nvim
   {
     "folke/tokyonight.nvim",
     event = "User LoadColorSchemes",
     opts = {
+      style = "night",
+      transparent = false,
       dim_inactive = false,
       styles = {
         comments = { italic = true },
@@ -73,6 +81,7 @@ return {
   --  https://github.com/goolord/alpha-nvim
   {
     "goolord/alpha-nvim",
+    requires = {'BlakeJC94/alpha-nvim-fortune'},
     cmd = "Alpha",
     -- setup header and buttonts
     opts = function()
@@ -147,20 +156,27 @@ return {
         }
       else
         dashboard.section.header.val = {
-          [[888b      88                                                           88]],
-          [[8888b     88                                                           88]],
-          [[88 `8b    88                                                           88]],
-          [[88  `8b   88   ,adPPYba,   8b,dPPYba,  88,dPYba,,adPYba,   ,adPPYYba,  88]],
-          [[88   `8b  88  a8"     "8a  88P'   "Y8  88P'   "88"    "8a  ""     `Y8  88]],
-          [[88    `8b 88  8b       d8  88          88      88      88  ,adPPPPP88  88]],
-          [[88     `8888  "8a,   ,a8"  88          88      88      88  88,    ,88  88]],
-          [[88      `888   `"YbbdP"'   88          88      88      88  `"8bbdP"Y8  88]],
-          [[                                    __                ]],
-          [[                      ___   __  __ /\_\    ___ ___    ]],
-          [[                    /' _ `\/\ \/\ \\/\ \ /' __` __`\  ]],
-          [[                    /\ \/\ \ \ \_/ |\ \ \/\ \/\ \/\ \ ]],
-          [[                    \ \_\ \_\ \___/  \ \_\ \_\ \_\ \_\]],
-          [[                     \/_/\/_/\/__/    \/_/\/_/\/_/\/_/]],
+          [[                              ]],
+          [[                              ]],
+          [[                              ]],
+          [[⠄⠄⠄⢰⣧⣼⣯⠄⣸⣠⣶⣶⣦⣾⠄⠄⠄⠄⡀⠄⢀⣿⣿⠄⠄⠄⢸⡇⠄⠄]],
+          [[⠄⠄⠄⣾⣿⠿⠿⠶⠿⢿⣿⣿⣿⣿⣦⣤⣄⢀⡅⢠⣾⣛⡉⠄⠄⠄⠸⢀⣿⠄]],
+          [[⠄⠄⢀⡋⣡⣴⣶⣶⡀⠄⠄⠙⢿⣿⣿⣿⣿⣿⣴⣿⣿⣿⢃⣤⣄⣀⣥⣿⣿⠄]],
+          [[⠄⠄⢸⣇⠻⣿⣿⣿⣧⣀⢀⣠⡌⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⣿⣿⣿⠄]],
+          [[⠄⢀⢸⣿⣷⣤⣤⣤⣬⣙⣛⢿⣿⣿⣿⣿⣿⣿⡿⣿⣿⡍⠄⠄⢀⣤⣄⠉⠋⣰]],
+          [[⠄⣼⣖⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⢇⣿⣿⡷⠶⠶⢿⣿⣿⠇⢀⣤]],
+          [[⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿⣿⣿⡇⣿⣿⣿⣿⣿⣿⣷⣶⣥⣴⣿⡗]],
+          [[⢀⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄]],
+          [[⢸⣿⣦⣌⣛⣻⣿⣿⣧⠙⠛⠛⡭⠅⠒⠦⠭⣭⡻⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠄]],
+          [[⠘⣿⣿⣿⣿⣿⣿⣿⣿⡆⠄⠄⠄⠄⠄⠄⠄⠄⠹⠈⢋⣽⣿⣿⣿⣿⣵⣾⠃⠄]],
+          [[⠄⠘⣿⣿⣿⣿⣿⣿⣿⣿⠄⣴⣿⣶⣄⠄⣴⣶⠄⢀⣾⣿⣿⣿⣿⣿⣿⠃⠄⠄]],
+          [[⠄⠄⠈⠻⣿⣿⣿⣿⣿⣿⡄⢻⣿⣿⣿⠄⣿⣿⡀⣾⣿⣿⣿⣿⣛⠛⠁⠄⠄⠄]],
+          [[⠄⠄⠄⠄⠈⠛⢿⣿⣿⣿⠁⠞⢿⣿⣿⡄⢿⣿⡇⣸⣿⣿⠿⠛⠁⠄⠄⠄⠄⠄]],
+          [[⠄⠄⠄⠄⠄⠄⠄⠉⠻⣿⣿⣾⣦⡙⠻⣷⣾⣿⠃⠿⠋⠁⠄⠄⠄⠄⠄⢀⣠⣴]],
+          [[⣿⣿⣿⣶⣶⣮⣥⣒⠲⢮⣝⡿⣿⣿⡆⣿⡿⠃⠄⠄⠄⠄⠄⠄⠄⣠⣴⣿⣿⣿]],
+          [[                              ]],
+          [[      Powered By eovim      ]],
+          [[                              ]],
         }
       end
 
@@ -196,10 +212,10 @@ return {
       }
 
       -- Vertical margins
-      dashboard.config.layout[1].val =
-          vim.fn.max { 2, vim.fn.floor(vim.fn.winheight(0) * 0.10) } -- Above header
-      dashboard.config.layout[3].val =
-          vim.fn.max { 2, vim.fn.floor(vim.fn.winheight(0) * 0.10) } -- Above buttons
+      dashboard.config.layout[1].val = 0
+          -- vim.fn.max { 2, vim.fn.floor(vim.fn.winheight(0) * 0.10) } -- Above header
+      dashboard.config.layout[3].val = 0
+          -- vim.fn.max { 2, vim.fn.floor(vim.fn.winheight(0) * 0.10) } -- Above buttons
 
       -- Disable autocmd and return
       dashboard.config.opts.noautocmd = true
@@ -224,6 +240,9 @@ return {
             "Loaded " .. stats.loaded .. " plugins " .. footer_icon .. " in " .. ms .. "ms",
             ".............................",
           }
+          local fortune = require("alpha.fortune")
+          opts.section.footer.val = fortune()
+
           opts.section.footer.opts.hl = "DashboardFooter"
           vim.cmd("highlight DashboardFooter guifg=#D29B68")
           pcall(vim.cmd.AlphaRedraw)
@@ -653,7 +672,8 @@ return {
   {
     "nvim-mini/mini.animate",
     event = "User BaseFile",
-    enabled = not is_android,
+    enabled = false,
+    -- enabled = not is_android,
     opts = function()
       -- don't use animate when scrolling with the mouse
       local mouse_scrolled = false
