@@ -53,7 +53,7 @@ vim.opt.colorcolumn = "" -- PEP8 like character limit vertical bar.
 vim.opt.mousescroll = "ver:6,hor:6" -- Disables hozirontal scroll in neovim.
 vim.opt.guicursor = "n:blinkon200,i-ci-ve:ver25" -- Enable cursor blink.
 vim.opt.autochdir = false -- Use current file dir as working dir (See project.nvim).
-vim.opt.scrolloff = 8 -- Number of lines to leave before/after the cursor when scrolling. Setting a high value keep the cursor centered.
+vim.opt.scrolloff = 4 -- Number of lines to leave before/after the cursor when scrolling. Setting a high value keep the cursor centered.
 vim.opt.sidescrolloff = 8 -- Same but for side scrolling.
 vim.opt.selection = "old" -- Don't select the newline symbol when using <End> on visual mode.
 
@@ -84,3 +84,10 @@ vim.g.lsp_signature_enabled = true -- Enable automatically showing lsp help as y
 vim.g.notifications_enabled = true -- Enable notifications.
 vim.g.url_hl_enabled = true -- Highlight URLs with an underline effect.
 
+
+vim.diagnostic.config({
+  -- Stops rust-analyzer from rendering the red error text until you press Escape
+  update_in_insert = false,
+  -- Optional: If you want to disable the inline red text entirely and only use floating windows
+  virtual_text = false,
+})

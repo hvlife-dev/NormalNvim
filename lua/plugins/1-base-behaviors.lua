@@ -546,6 +546,7 @@ return {
   --  https://github.com/andymass/vim-matchup
   {
     "andymass/vim-matchup",
+    enabled = false,
     event = "User BaseDefered",
     config = function()
       vim.g.matchup_matchparen_deferred = 1   -- work async

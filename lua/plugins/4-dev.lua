@@ -603,7 +603,7 @@ return {
           reAttach = true,
           url = 'http://localhost:4200', -- Write the actual URL of your project.
           webRoot = '${workspaceFolder}',
-          firefoxExecutable = '/usr/bin/firefox'
+          firefoxExecutable = '/usr/bin/waterfox'
         }
       }
       dap.configurations.javascript = dap.configurations.typescript
